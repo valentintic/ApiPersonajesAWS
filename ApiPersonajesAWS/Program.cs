@@ -5,6 +5,11 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(p => p.AddPolicy("corsenabled", options =>
+{
+    options.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
+
 // Add services to the container.
 string connectionString = builder.Configuration.GetConnectionString("MySql");
 builder.Services.AddDbContext<PersonajesContext>(options =>
@@ -20,6 +25,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
 }
+app.UseCors("corsenabled");
 app.MapScalarApiReference(options => 
     options.BaseServerUrl = "/scalar");
 app.MapOpenApi();
